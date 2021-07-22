@@ -1,4 +1,6 @@
 <resources>
-    <string name="app_name">pomodoro</string>
-    <string name="add_stopwatch_button_text">ADD STOPWATCH</string>
+    <string name="app_name">Pomodoro</string>
+    <string name="main_activity_name">Timers</string>
+    <string name="add_stopwatch_button_text">ADD</string>
+    <string name="remove_stopwatch_button_text">REMOVE</string>
 </resources>
