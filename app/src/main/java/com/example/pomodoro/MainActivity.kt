@@ -1,6 +1,5 @@
 package com.example.pomodoro
 
-import com.example.pomodoro.services.TimerService
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -18,22 +17,17 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.LifecycleObserver
+import com.example.pomodoro.services.TimerService
 import com.example.pomodoro.ui.theme.PomodoroTheme
 import com.example.pomodoro.viewmodel.TimersViewModel
 import java.util.*
@@ -430,7 +424,7 @@ fun TimerCard(
                 //enabled = false
             ) {
                 Icon(
-                    Icons.Filled.Delete,
+                    painterResource(id = R.drawable.ic_baseline_delete_24),
                     modifier = Modifier.size(48.dp),
                     contentDescription = "Delete Button"
                 )
