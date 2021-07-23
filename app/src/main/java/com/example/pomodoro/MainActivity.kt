@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -18,6 +19,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pomodoro.services.TimerService
 import com.example.pomodoro.ui.theme.PomodoroTheme
 import com.example.pomodoro.viewmodel.TimersViewModel
@@ -40,6 +44,7 @@ class MainActivity : ComponentActivity(), LifecycleObserver {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val viewModel: TimersViewModel by viewModels()
         setContent {
             PomodoroTheme {
                 TimersScreen(
@@ -52,6 +57,24 @@ class MainActivity : ComponentActivity(), LifecycleObserver {
                     }
                 )
             }
+        }
+    }
+
+    @ExperimentalAnimationApi
+    @RequiresApi(Build.VERSION_CODES.N)
+    @Preview(showBackground = true)
+    @Composable
+    fun Preview() {
+        PomodoroTheme {
+            TimersScreen(
+                currentTimersCount = {
+                    //TODO()
+                },
+                onTick = {
+                    //TODO()
+                }
+            )
+            //Test()
         }
     }
 
@@ -95,24 +118,6 @@ class MainActivity : ComponentActivity(), LifecycleObserver {
         startMain.addCategory(Intent.CATEGORY_HOME)
         startMain.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(startMain)
-    }
-}
-
-@ExperimentalAnimationApi
-@RequiresApi(Build.VERSION_CODES.N)
-@Preview(showBackground = true)
-@Composable
-fun Preview() {
-    PomodoroTheme {
-        TimersScreen(
-            currentTimersCount = {
-                //TODO()
-            },
-            onTick = {
-                //TODO()
-            }
-        )
-        //Test()
     }
 }
 
@@ -320,15 +325,17 @@ fun TimerCard(
         mutableStateOf(false)
     }
 
-    val countDown = object : CountDownTimer(currentTime, 1000) {
+    val countDown = object : CountDownTimer(currentTime, 1) {
         override fun onTick(millisUntilFinished: Long) {
             if (!isTimerRunning) {
                 cancel()
             }
             currentTime = millisUntilFinished
             value = currentTime.toFloat() / previousTime.toFloat()
-            pointActive = true
-            onTick(millisUntilFinished)
+            if (millisUntilFinished % 1000 in (0..99) && isTimerRunning) {
+                pointActive = !pointActive
+                onTick(millisUntilFinished)
+            }
         }
 
         override fun onFinish() {
@@ -374,6 +381,12 @@ fun TimerCard(
                     contentDescription = "empty"
                 )
             }
+//            TextField(
+//                value = viewModel.testText.value,
+//                onValueChange = { newText ->
+//                    viewModel.onTestTextChanged(newText)
+//                }
+//            )
             TimerClockFace(
                 timeMillis = currentTime,
                 height = height - padding,
@@ -568,7 +581,7 @@ fun TimerClockFace(
         Row {
             Spacer(modifier = Modifier.width((height / 50).dp))
             Text(
-                text = timeMillis.displayTime().dropLast(3),
+                text = timeMillis.toTimeFormatString(),
                 modifier = Modifier
                     .wrapContentHeight()
                     .wrapContentWidth(),
